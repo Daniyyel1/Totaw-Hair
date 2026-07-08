@@ -1,0 +1,157 @@
+"use client";
+
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "sonner";
+
+interface CartItem {
+  _id: string;
+  oil: Oils;
+  quantity: number;
+}
+
+interface Review {
+  _id: string;
+  reviewer: string;
+  comment: string;
+  rating: number;
+}
+
+interface Benefit {
+  _id: string;
+  label: string;
+  benefit: string;
+}
+
+interface Use {
+  _id: string;
+  label: string;
+  usage: string;
+}
+
+interface Oils {
+  _id: string;
+  name: string;
+  price: number;
+  itemImage: string;
+  description: string;
+  reviews: Review[];
+  benefits: Benefit[];
+  use: Use[];
+}
+
+interface SearchContextType {
+  oil: Oils[];
+  refetchOils: () => void;
+  cart: CartItem[];
+  addToCart: (bookId: string, quantity: number) => Promise<void>;
+  removeFromCart: (itemId: string) => Promise<void>;
+  updateQuantity: (itemId: string, quantity: number) => Promise<void>;
+}
+
+export const SearchContext = createContext<SearchContextType | null>(null);
+
+const CheckContext = ({ children }: { children: React.ReactNode }) => {
+  const [oil, setOil] = useState<Oils[]>([]);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const { data: session } = useSession();
+
+  const fetchOils = async () => {
+    try {
+      const response = await axios.get("/api/oils");
+      if (response.status === 201) {
+        setOil(response.data.data);
+      } else {
+        toast.error("cannot fetch products");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+   const fetchCart = async () => {
+    try {
+      const response = await axios.get("/api/cart", {
+        withCredentials: true,
+      });
+      setCart(response.data.data?.items ?? []);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const addToCart = async (oilId: string, quantity: number) => {
+    try {
+      await axios.post("/api/cart", { oilId, quantity }, {
+        withCredentials: true,
+      });
+      await fetchCart();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const removeFromCart = async (cartId: string) => {
+    try {
+      await axios.delete(`/api/cart/${cartId}`, {
+        withCredentials: true,
+      });
+      await fetchCart();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const updateQuantity = async (cartId: string, quantity: number) => {
+    try {
+      await axios.patch(`/api/cart/${cartId}`, { quantity }, {
+        withCredentials: true,
+      });
+      await fetchCart();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchOils();
+  }, [refetchTrigger]);
+
+  const refetchOils = () => setRefetchTrigger((prev) => prev + 1);
+
+   useEffect(() => {
+    if (session) {
+      fetchCart();
+    } else {
+      setCart([]); // clear cart on logout
+    }
+  }, [session]);
+
+
+
+  return (
+    <SearchContext.Provider
+      value={{
+        oil,
+        refetchOils,
+        cart,
+        updateQuantity,
+        addToCart,
+        removeFromCart,
+      }}
+    >
+      {children}
+    </SearchContext.Provider>
+  );
+};
+
+export const useOils = () => {
+  const context = useContext(SearchContext);
+  if (!context) throw new Error("useBooks must be used within a CheckContext");
+  return context;
+};
+
+export default CheckContext;

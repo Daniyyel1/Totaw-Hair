@@ -1,6 +1,7 @@
   "use client"
 
-import { doSocialLogin } from '@/app/actions/page'
+
+import { doSocialLogin } from '@/app/lib/action'
 import React from 'react'
 
 const page = () => {

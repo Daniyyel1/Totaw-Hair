@@ -6,7 +6,7 @@ import Navbar from "../layouts/navbar/page"
 
 const comorantInfant = localFont({
   src: "../../fonts/CormorantInfant-Regular.ttf",
-  variable: "--font-comorantInfant",
+  variable: "--font-comorant-infant",
 })
 
 export const metadata: Metadata = {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { doLogout } from '../actions/page'
+import { doLogout } from '../lib/action'
 
 const page = () => {
   return (

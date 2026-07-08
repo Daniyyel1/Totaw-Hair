@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { Cormorant_Infant, Geist, Geist_Mono } from "next/font/google";
+import {  Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import localFont from 'next/font/local'
+import localFont from "next/font/local";
+import ThemeProvider from "@/components/theme-provider/page";
+import CheckContext from "./context/page";
+import { SessionProvider } from "next-auth/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,9 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 const cormorantInfant = localFont({
-   src: "./fonts/CormorantInfant-Regular.ttf",
-   variable: '--font-comorant-infant'
-})
+  src: "./fonts/CormorantInfant-Regular.ttf",
+  variable: "--font-comorant-infant",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -29,15 +32,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${cormorantInfant.variable} `}>
-    <body className="antialiased">
-     
-      
-      {children}
-     
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${cormorantInfant.variable} `}
+      suppressHydrationWarning
+    >
+      <body className="antialiased">
+        <SessionProvider>
+        <CheckContext>
+
        
-    </body>
-  </html>
-    
+        {children}
+
+        <ThemeProvider />
+         </CheckContext>
+         </SessionProvider>
+      </body>
+    </html>
   );
 }

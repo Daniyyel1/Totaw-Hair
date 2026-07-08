@@ -1,5 +1,5 @@
 @import "tailwindcss";
 
 @theme{
-    --font-comorant-infant: var(--font-comorantInfant)
+    --font-comorantInfant: var(--font-comorant-infant)
 }
