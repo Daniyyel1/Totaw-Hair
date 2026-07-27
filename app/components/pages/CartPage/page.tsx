@@ -300,7 +300,7 @@ const CartPage = () => {
             role="status"
             aria-label="Loading"
             className="size-14 sm:size-20 text-[#FFC0CB] mt-20 sm:mt-30 animate-spin"
-          />
+          /> 
         </div>
       ) : (
         <div>

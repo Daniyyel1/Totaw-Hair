@@ -157,13 +157,15 @@ const Navbar = () => {
               }
             </div>
             {user ? (
+                <Link href="/components/subPages/Profile" className=" sm:inline whitespace-nowrap">
+
               <div className="rounded-xl flex justify-center items-center h-9 sm:h-10 w-full px-2 sm:px-3 bg-black text-white font-bold gap-2">
-                <Link href="/components/subPages/Profile" className="hidden sm:inline whitespace-nowrap">
                   {user?.name}
-                </Link>
+                
                 <Image className="h-7 w-7 object-cover rounded-full" src={user?.profilePicture} alt={user?.name} width={10} height={10} />
               
               </div>
+              </Link>
             ) : (
               <Link href="/Register">
                 <button className=" w-full text-[15px] sm:text-[18px] px-2 sm:px-0 bg-[#FFC0CB] rounded-[12px] cursor-pointer flex justify-center items-center whitespace-nowrap">
