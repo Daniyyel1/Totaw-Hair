@@ -11,7 +11,7 @@ import Footer from "@/app/components/layouts/footer/page";
 import { useSession } from "next-auth/react";
 
 const ProductsDetails = () => {
-  const { oil, refetchOils, addToCart, updateQuantity, removeFromCart } =
+  const { oil, refetchOils, addToCart } =
     useOils();
   const params = useParams();
   const [openId, setOpenId] = useState<string | null>(null);

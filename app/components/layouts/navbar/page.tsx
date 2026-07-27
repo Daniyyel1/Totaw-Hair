@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import tota from "../../../../public/tota.png";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Search, X, Menu } from "lucide-react";
+import {  X, Menu } from "lucide-react";
 import { RiShoppingBasketFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
 import { useOils } from "@/app/context/page";
@@ -30,8 +30,7 @@ const Navbar = () => {
   const total = cart.reduce((sum, ct) => sum + ct.oil.price * ct.quantity, 0);
   const isCartOpen = () => setIsCart(!isCart);
   const { data: session } = useSession();
-  const [isSearch, setIsSearch] = useState(false);
-  const checkIsSearch = () => setIsSearch(!isSearch);
+
   const closeCart = () => setIsCart(false);
   const [user, setUser] = useState<UserData | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -157,14 +156,6 @@ const Navbar = () => {
                 )
               }
             </div>
-            <motion.div
-              className={`${isSearch ? "block rounded-md border-2 h-12 w-48 sm:w-60 absolute top-16 sm:top-20 right-3 lg:right-auto lg:top-15 border-b-[#FFC0CB] px-3 py-2 bg-[#F2F2F2] transition-all duration-400 opacity-100" : "hidden transition-all duration-300 top-0 opacity-0"}`}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: "easeOut" }}
-            >
-              <input className="outline-0 w-full" type="text" placeholder="Search" />
-            </motion.div>
             {user ? (
               <div className="rounded-xl flex justify-center items-center h-9 sm:h-10 w-full px-2 sm:px-3 bg-black text-white font-bold gap-2">
                 <Link href="/components/subPages/Profile" className="hidden sm:inline whitespace-nowrap">

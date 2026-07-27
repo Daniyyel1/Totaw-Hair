@@ -3,7 +3,7 @@
 
 "use client";
 import { useOils } from "@/app/context/page";
-import { LoaderIcon, X } from "lucide-react";
+import { LoaderIcon } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { IoCartOutline } from "react-icons/io5";
