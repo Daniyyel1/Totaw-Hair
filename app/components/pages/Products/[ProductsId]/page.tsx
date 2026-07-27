@@ -24,6 +24,7 @@ const ProductsDetails = () => {
   const [selected, setSelected] = useState("Description");
   const { data: session } = useSession();
   const [quantity, setQuantity] = useState(1);
+  const [waiting, setWaiting] = useState(true);
   const router = useRouter();
 
   const stars = [1, 2, 3, 4, 5];
@@ -124,251 +125,271 @@ const ProductsDetails = () => {
 
   useEffect(() => {}, [fo]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setWaiting(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <section className="max-w-275 mx-auto px-4 sm:px-6 lg:px-0">
-      <div className="mt-20 sm:mt-24 lg:mt-30 flex flex-col lg:flex-row gap-8 lg:gap-12">
-        <div className="flex-1">
-          <div className="flex flex-col sm:flex-row justify-center items-center sm:items-start gap-4">
-            <div className="h-90 sm:h-72 lg:h-full w-full sm:w-56 lg:w-60">
-              <Image
-                src={
-                  fo?.itemImage?.startsWith("/9j/")
-                    ? `data:image/jpeg;base64,${fo?.itemImage}`
-                    : fo?.itemImage || "/placeholder.jpg"
-                }
-                alt={fo?.name ?? ""}
-                width={300}
-                height={260}
-                className="object-cover h-full w-full rounded-md"
-              />
-            </div>
-            <div className="w-full sm:w-auto text-center sm:text-left">
-              <h1 className="text-lg sm:text-xl font-medium">{fo?.name}</h1>
-              <span className="block mt-4 font-bold text-lg sm:text-xl">
-                ₦
-                {fo?.price.toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>
-              <StarDisplay reviews={fo?.reviews ?? []} />
-              <div className="border h-8 mt-3 w-24 sm:w-30 mx-auto sm:mx-0 px-2 flex justify-center items-center gap-4 sm:gap-6">
+    <>
+      {waiting ? (
+        <div className="flex justify-center items-center ">
+          <LoaderIcon
+            role="status"
+            aria-label="Loading"
+            className="size-14 sm:size-20 text-[#FFC0CB] mt-20 sm:mt-30 animate-spin"
+          />
+        </div>
+      ) : (
+        <section className="max-w-275 mx-auto px-4 sm:px-6 lg:px-0">
+          <div className="mt-20 sm:mt-24 lg:mt-30 flex flex-col lg:flex-row gap-8 lg:gap-12">
+            <div className="flex-1">
+              <div className="flex flex-col sm:flex-row justify-center items-center sm:items-start gap-4">
+                <div className="h-90 sm:h-72 lg:h-full w-full sm:w-56 lg:w-60">
+                  <Image
+                    src={
+                      fo?.itemImage?.startsWith("/9j/")
+                        ? `data:image/jpeg;base64,${fo?.itemImage}`
+                        : fo?.itemImage || "/placeholder.jpg"
+                    }
+                    alt={fo?.name ?? ""}
+                    width={300}
+                    height={260}
+                    className="object-cover h-full w-full rounded-md"
+                  />
+                </div>
+                <div className="w-full sm:w-auto text-center sm:text-left">
+                  <h1 className="text-lg sm:text-xl font-medium">{fo?.name}</h1>
+                  <span className="block mt-4 font-bold text-lg sm:text-xl">
+                    ₦
+                    {fo?.price.toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </span>
+                  <StarDisplay reviews={fo?.reviews ?? []} />
+                  <div className="border h-8 mt-3 w-24 sm:w-30 mx-auto sm:mx-0 px-2 flex justify-center items-center gap-4 sm:gap-6">
+                    <button
+                      onClick={() => setQuantity(quantity - 1)}
+                      className="text-[#FFC0CB] text-xl font-bold cursor-pointer"
+                    >
+                      -
+                    </button>
+                    <span>{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="text-[#FFC0CB] text-xl font-bold cursor-pointer"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => handleCart(fo?._id ?? "")}
+                    className="flex hover:text-white cursor-pointer mt-5 sm:mt-7 rounded-md justify-center items-center gap-3 border h-12 w-full sm:w-64 lg:w-full bg-[#FFC0CB] text-base sm:text-xl"
+                  >
+                    {loadingId ? (
+                      <div>
+                        <LoaderIcon className="size-4 animate-spin" />
+                      </div>
+                    ) : (
+                      <div className="flex justify-center items-center gap-4">
+                        Start order <IoCartOutline />
+                      </div>
+                    )}
+                  </button>
+                </div>
+              </div>
+              <div className="mt-10 bg-[#F2F2F2] rounded-3xl flex justify-center items-center border h-12 sm:h-13 w-full sm:w-85">
                 <button
-                  onClick={() => setQuantity(quantity - 1)}
-                  className="text-[#FFC0CB] text-xl font-bold cursor-pointer"
+                  className={` ${selected === "Description" ? "bg-[#FFC0CB]  text-white text-bold text-[14px] sm:text-[16px] h-9 sm:h-10 w-1/2 sm:w-40 rounded-2xl transition-all duration-400" : " h-9 sm:h-10 w-1/2 sm:w-40 text-[14px] sm:text-[16px] rounded-xl transition-all duration-400 cursor-pointer"}`}
+                  onClick={() => setSelected("Description")}
                 >
-                  -
+                  Description
                 </button>
-                <span>{quantity}</span>
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="text-[#FFC0CB] text-xl font-bold cursor-pointer"
+                  onClick={() => setSelected("Reviews")}
+                  className={`${selected === "Reviews" ? "bg-[#FFC0CB] text-white text-bold text-[14px] sm:text-[16px] rounded-2xl h-9 sm:h-10 w-1/2 sm:w-40 transition-all duration-400" : "h-9 sm:h-10 w-1/2 sm:w-40 text-[14px] sm:text-[16px] transition-all duration-400 cursor-pointer"}`}
                 >
-                  +
+                  Reviews
                 </button>
               </div>
-              <button
-                onClick={() => handleCart(fo?._id ?? "")}
-                className="flex hover:text-white cursor-pointer mt-5 sm:mt-7 rounded-md justify-center items-center gap-3 border h-12 w-full sm:w-64 lg:w-full bg-[#FFC0CB] text-base sm:text-xl"
-              >
-                {loadingId ? (
-                  <div>
-                    <LoaderIcon className="size-4 animate-spin" />
-                  </div>
-                ) : (
-                  <div className="flex justify-center items-center gap-4">
-                    Start order <IoCartOutline />
-                  </div>
+              <div className="mt-5">
+                {selected === "Description" && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.9, ease: "easeOut" }}
+                    className="text-sm sm:text-base"
+                  >
+                    {fo?.description}
+                  </motion.p>
                 )}
-              </button>
-            </div>
-          </div>
-          <div className="mt-10 bg-[#F2F2F2] rounded-3xl flex justify-center items-center border h-12 sm:h-13 w-full sm:w-85">
-            <button
-              className={` ${selected === "Description" ? "bg-[#FFC0CB]  text-white text-bold text-[14px] sm:text-[16px] h-9 sm:h-10 w-1/2 sm:w-40 rounded-2xl transition-all duration-400" : " h-9 sm:h-10 w-1/2 sm:w-40 text-[14px] sm:text-[16px] rounded-xl transition-all duration-400 cursor-pointer"}`}
-              onClick={() => setSelected("Description")}
-            >
-              Description
-            </button>
-            <button
-              onClick={() => setSelected("Reviews")}
-              className={`${selected === "Reviews" ? "bg-[#FFC0CB] text-white text-bold text-[14px] sm:text-[16px] rounded-2xl h-9 sm:h-10 w-1/2 sm:w-40 transition-all duration-400" : "h-9 sm:h-10 w-1/2 sm:w-40 text-[14px] sm:text-[16px] transition-all duration-400 cursor-pointer"}`}
-            >
-              Reviews
-            </button>
-          </div>
-          <div className="mt-5">
-            {selected === "Description" && (
-              <motion.p
-                initial={{ opacity: 0, y: -40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.9, ease: "easeOut" }}
-                className="text-sm sm:text-base"
-              >
-                {fo?.description}
-              </motion.p>
-            )}
 
-            {selected === "Reviews" && (
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.9, ease: "easeOut" }}
-              >
-                {(fo?.reviews.length ?? 0) > 0 ? (
-                  <div>
-                    {fo?.reviews.map((rv) => (
-                      <div
-                        key={rv._id}
-                        className="mb-4 sm:mb-6 text-sm sm:text-base"
-                      >
-                        <p>{rv.reviewer}</p>
-                        <p>{rv.comment}</p>
-                        <div>
-                          {stars.map((star) => (
-                            <span
-                              key={star}
-                              className={
-                                star <= rv.rating
-                                  ? "text-[#FBBF24] text-xl"
-                                  : "text-[#D1D5DB] text-xl"
-                              }
-                            >
-                              ★
-                            </span>
-                          ))}
-                        </div>
+                {selected === "Reviews" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.9, ease: "easeOut" }}
+                  >
+                    {(fo?.reviews.length ?? 0) > 0 ? (
+                      <div>
+                        {fo?.reviews.map((rv) => (
+                          <div
+                            key={rv._id}
+                            className="mb-4 sm:mb-6 text-sm sm:text-base"
+                          >
+                            <p>{rv.reviewer}</p>
+                            <p>{rv.comment}</p>
+                            <div>
+                              {stars.map((star) => (
+                                <span
+                                  key={star}
+                                  className={
+                                    star <= rv.rating
+                                      ? "text-[#FBBF24] text-xl"
+                                      : "text-[#D1D5DB] text-xl"
+                                  }
+                                >
+                                  ★
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div>
-                    <p>no reviews yet, be the first to comment</p>
-                  </div>
+                    ) : (
+                      <div>
+                        <p>no reviews yet, be the first to comment</p>
+                      </div>
+                    )}
+                  </motion.div>
                 )}
-              </motion.div>
-            )}
-          </div>
-        </div>
-        <div className="flex-1">
-          <div className="w-full">
-            <h1 className="text-[18px] sm:text-[20px] font-bold py-3 text-center text-[#FFC0CB]">Benefits</h1>
-            {fo?.benefits.map((be) => {
-              const isOpen = openId === be._id;
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="w-full">
+                <h1 className="text-[18px] sm:text-[20px] font-bold py-3 text-center text-[#FFC0CB]">
+                  Benefits
+                </h1>
+                {fo?.benefits.map((be) => {
+                  const isOpen = openId === be._id;
 
-              return (
-                <div key={be._id} className="border-b-2 border-[#FFC0CB]">
-                  <button
-                    type="button"
-                    onClick={() => toggle(be._id)}
-                    className="flex w-full justify-between items-center py-2 text-left cursor-pointer"
-                    aria-expanded={isOpen}
-                  >
-                    <h3 className="text-[14px] sm:text-[16px] font-bold text-center capitalize">
-                      {be.label}
-                    </h3>
-                    {isOpen ? (
-                      <Minus className="size-4" />
-                    ) : (
-                      <Plus className="size-4" />
-                    )}
-                  </button>
-
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        key="content"
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="overflow-hidden"
+                  return (
+                    <div key={be._id} className="border-b-2 border-[#FFC0CB]">
+                      <button
+                        type="button"
+                        onClick={() => toggle(be._id)}
+                        className="flex w-full justify-between items-center py-2 text-left cursor-pointer"
+                        aria-expanded={isOpen}
                       >
-                        <motion.p
-                          initial={{ opacity: 0, x: -40 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -40 }}
-                          transition={{ duration: 0.3, ease: "easeOut" }}
-                          className="text-sm sm:text-[15px] pb-2"
-                        >
-                          {be.benefit}
-                        </motion.p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </div>
-          <div className="w-full mt-9">
-            <h1 className="text-[18px] sm:text-[20px] text-[#FFC0CB] font-bold py-3 text-center">
-              How to use
-            </h1>
-            {fo?.use.map((be) => {
-              const isOpen = openId === be._id;
+                        <h3 className="text-[14px] sm:text-[16px] font-bold text-center capitalize">
+                          {be.label}
+                        </h3>
+                        {isOpen ? (
+                          <Minus className="size-4" />
+                        ) : (
+                          <Plus className="size-4" />
+                        )}
+                      </button>
 
-              return (
-                <div key={be._id} className="border-b-2 border-[#FFC0CB]">
-                  <button
-                    type="button"
-                    onClick={() => toggle(be._id)}
-                    className="flex w-full justify-between items-center py-2 text-left cursor-pointer"
-                    aria-expanded={isOpen}
-                  >
-                    <h3 className="text-[14px] sm:text-[16px] font-bold capitalize">
-                      {be.label}
-                    </h3>
-                    {isOpen ? (
-                      <Minus className="size-4" />
-                    ) : (
-                      <Plus className="size-4" />
-                    )}
-                  </button>
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            key="content"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="overflow-hidden"
+                          >
+                            <motion.p
+                              initial={{ opacity: 0, x: -40 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: -40 }}
+                              transition={{ duration: 0.3, ease: "easeOut" }}
+                              className="text-sm sm:text-[15px] pb-2"
+                            >
+                              {be.benefit}
+                            </motion.p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="w-full mt-9">
+                <h1 className="text-[18px] sm:text-[20px] text-[#FFC0CB] font-bold py-3 text-center">
+                  How to use
+                </h1>
+                {fo?.use.map((be) => {
+                  const isOpen = openId === be._id;
 
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        key="content"
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="overflow-hidden"
+                  return (
+                    <div key={be._id} className="border-b-2 border-[#FFC0CB]">
+                      <button
+                        type="button"
+                        onClick={() => toggle(be._id)}
+                        className="flex w-full justify-between items-center py-2 text-left cursor-pointer"
+                        aria-expanded={isOpen}
                       >
-                        <motion.p
-                          initial={{ opacity: 0, x: -40 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -40 }}
-                          transition={{ duration: 0.3, ease: "easeOut" }}
-                          className="text-sm sm:text-[15px] pb-2"
-                        >
-                          {be.usage}
-                        </motion.p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </div>
-          <div>
-            <h1 className=" mt-8 text-center text-sm sm:text-[16px]">
-              Kindly leave a review, so others can know how you feel about this
-              product.
-            </h1>
-            <div>
-              <form
-                onSubmit={handleSubmit}
-                className="grid gap-1.5 mt-3 w-full lg:w-150"
-              >
-                <div className="flex flex-col gap-1">
-                  <label>Your name</label>
-                  <input
-                    value={reviewer}
-                    onChange={(e) => setReviewer(e.target.value)}
-                    className="border
+                        <h3 className="text-[14px] sm:text-[16px] font-bold capitalize">
+                          {be.label}
+                        </h3>
+                        {isOpen ? (
+                          <Minus className="size-4" />
+                        ) : (
+                          <Plus className="size-4" />
+                        )}
+                      </button>
+
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            key="content"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="overflow-hidden"
+                          >
+                            <motion.p
+                              initial={{ opacity: 0, x: -40 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: -40 }}
+                              transition={{ duration: 0.3, ease: "easeOut" }}
+                              className="text-sm sm:text-[15px] pb-2"
+                            >
+                              {be.usage}
+                            </motion.p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+              </div>
+              <div>
+                <h1 className=" mt-8 text-center text-sm sm:text-[16px]">
+                  Kindly leave a review, so others can know how you feel about
+                  this product.
+                </h1>
+                <div>
+                  <form
+                    onSubmit={handleSubmit}
+                    className="grid gap-1.5 mt-3 w-full lg:w-150"
+                  >
+                    <div className="flex flex-col gap-1">
+                      <label>Your name</label>
+                      <input
+                        value={reviewer}
+                        onChange={(e) => setReviewer(e.target.value)}
+                        className="border
                   focus:border-[#FFC0CB]
                   focus:border-2
                   rounded-md
@@ -378,32 +399,32 @@ const ProductsDetails = () => {
                    sm:h-12
                    w-full
                    outline-0"
-                    type="text"
-                  />
-                </div>
-                <div>
-                  {stars.map((star) => (
-                    <span
-                      onClick={() => setRating(star)}
-                      onMouseEnter={() => setHover(star)}
-                      onMouseLeave={() => setHover(null)}
-                      key={star}
-                      className={
-                        star <= (hover ?? rating)
-                          ? "text-[#FBBF24] cursor-pointer text-2xl"
-                          : "text-[#D1D5DB] cursor-pointer text-2xl"
-                      }
-                    >
-                      ★
-                    </span>
-                  ))}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label>Comment</label>
-                  <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    className=" resize-none border
+                        type="text"
+                      />
+                    </div>
+                    <div>
+                      {stars.map((star) => (
+                        <span
+                          onClick={() => setRating(star)}
+                          onMouseEnter={() => setHover(star)}
+                          onMouseLeave={() => setHover(null)}
+                          key={star}
+                          className={
+                            star <= (hover ?? rating)
+                              ? "text-[#FBBF24] cursor-pointer text-2xl"
+                              : "text-[#D1D5DB] cursor-pointer text-2xl"
+                          }
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label>Comment</label>
+                      <textarea
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        className=" resize-none border
                      h-20
                      outline-0
                      focus:border-2
@@ -414,14 +435,14 @@ const ProductsDetails = () => {
                      px-3
                      sm:px-5
                      w-full"
-                    placeholder="leave a comment"
-                    maxLength={150}
-                  />
-                </div>
-                <div className="flex justify-center items-center mt-6">
-                  <button
-                    type="submit"
-                    className="h-11
+                        placeholder="leave a comment"
+                        maxLength={150}
+                      />
+                    </div>
+                    <div className="flex justify-center items-center mt-6">
+                      <button
+                        type="submit"
+                        className="h-11
                      sm:h-12
                      w-full
                      border
@@ -432,27 +453,29 @@ const ProductsDetails = () => {
                      justify-center
                      items-center
                      cursor-pointer"
-                  >
-                    {loading ? (
-                      <div className="flex justify-center items-center">
-                        <LoaderIcon
-                          role="status"
-                          aria-label="Loading"
-                          className="size-4 animate-spin"
-                        />
-                      </div>
-                    ) : (
-                      <Send />
-                    )}
-                  </button>
+                      >
+                        {loading ? (
+                          <div className="flex justify-center items-center">
+                            <LoaderIcon
+                              role="status"
+                              aria-label="Loading"
+                              className="size-4 animate-spin"
+                            />
+                          </div>
+                        ) : (
+                          <Send />
+                        )}
+                      </button>
+                    </div>
+                  </form>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <Footer />
-    </section>
+          <Footer />
+        </section>
+      )}
+    </>
   );
 };
 

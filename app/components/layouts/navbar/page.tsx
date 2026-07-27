@@ -146,8 +146,16 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="flex justify-center items-center gap-2 sm:gap-3">
-            <div className=" cursor-pointer rounded-full flex justify-center items-center">
-              <Search onClick={checkIsSearch} />
+            <div className="">
+              {
+                session?.user.role === "admin" && (
+                  <div>
+                    <Link href='/Dashboard'>
+                    <button className="border-2 cursor-pointer h-10 w-35 rounded-md">Hello admin!</button>
+                    </Link>
+                  </div>
+                )
+              }
             </div>
             <motion.div
               className={`${isSearch ? "block rounded-md border-2 h-12 w-48 sm:w-60 absolute top-16 sm:top-20 right-3 lg:right-auto lg:top-15 border-b-[#FFC0CB] px-3 py-2 bg-[#F2F2F2] transition-all duration-400 opacity-100" : "hidden transition-all duration-300 top-0 opacity-0"}`}

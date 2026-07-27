@@ -1,3 +1,6 @@
+
+
+
 "use client";
 import { useOils } from "@/app/context/page";
 import { LoaderIcon, X } from "lucide-react";
@@ -11,9 +14,10 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const ProductsPage = () => {
-  const { oil, addToCart } = useOils();
+  const { oil, cart, addToCart, updateQuantity, removeFromCart } = useOils();
   const [searchValue, setSearchValue] = useState("");
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
 
@@ -39,6 +43,33 @@ const ProductsPage = () => {
       console.error(e);
     } finally {
       setLoadingId(null);
+    }
+  };
+
+  const handleIncrement = async (cartId: string, currentQty: number) => {
+    try {
+      setUpdatingId(cartId);
+      await updateQuantity(cartId, currentQty + 1);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleDecrement = async (cartId: string, currentQty: number) => {
+    try {
+      setUpdatingId(cartId);
+      if (currentQty <= 1) {
+        await removeFromCart(cartId);
+        toast.success("Item removed from cart");
+      } else {
+        await updateQuantity(cartId, currentQty - 1);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -74,52 +105,97 @@ const ProductsPage = () => {
                 <h1 className="text-lg sm:text-xl font-bold">All Products</h1>
                 <div className="">
                   <div className="py-2.5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-3.5">
-                    {filteredSearch.map((fs) => (
-                      <div className=" h-auto w-full" key={fs._id}>
-                        <div className="h-36 sm:h-56 lg:h-80 w-full">
-                          <Link href={`/components/pages/Products/${fs._id}`}>
-                            <Image
-                              src={
-                                fs.itemImage?.startsWith("/9j/")
-                                  ? `data:image/jpeg;base64,${fs.itemImage}`
-                                  : fs.itemImage || "/placeholder.jpg"
-                              }
-                              alt={fs.name}
-                              width={300}
-                              height={260}
-                              className="object-cover h-full w-full rounded-md"
-                            />
-                          </Link>
-                        </div>
-                        <div className="px-1 sm:px-2 ">
-                          <h2 className="text-[13px] sm:text-[15px] lg:text-[17px] truncate font-medium">
-                            {fs.name}
-                          </h2>
-                          <span className="text-sm sm:text-lg lg:text-xl font-bold">
-                            ₦
-                            {fs.price.toLocaleString("en-US", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}
-                          </span>
+                    {filteredSearch.map((fs) => {
+                      const cartItem = cart.find(
+                        (item) => item.oil._id === fs._id,
+                      );
 
-                          <button
-                            onClick={() => handleCart(fs._id)}
-                            className="flex hover:text-white cursor-pointer mt-2 sm:mt-3 rounded-md justify-center items-center gap-2 sm:gap-3 border h-9 sm:h-10 w-full bg-[#FFC0CB] text-sm sm:text-lg lg:text-xl"
-                          >
-                            {loadingId === fs._id ? (
-                              <div>
-                                <LoaderIcon className="size-4 animate-spin" />
+                      return (
+                        <div className=" h-auto w-full" key={fs._id}>
+                          <div className="h-36 sm:h-56 lg:h-80 w-full">
+                            <Link href={`/components/pages/Products/${fs._id}`}>
+                              <Image
+                                src={
+                                  fs.itemImage?.startsWith("/9j/")
+                                    ? `data:image/jpeg;base64,${fs.itemImage}`
+                                    : fs.itemImage || "/placeholder.jpg"
+                                }
+                                alt={fs.name}
+                                width={300}
+                                height={260}
+                                className="object-cover h-full w-full rounded-md"
+                              />
+                            </Link>
+                          </div>
+                          <div className="px-1 sm:px-2 ">
+                            <h2 className="text-[13px] sm:text-[15px] lg:text-[17px] truncate font-medium">
+                              {fs.name}
+                            </h2>
+                            <span className="text-sm sm:text-lg lg:text-xl font-bold">
+                              ₦
+                              {fs.price.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}
+                            </span>
+
+                            {cartItem ? (
+                              <div className="flex justify-between items-center mt-2 sm:mt-3 rounded-md border h-9 sm:h-10 w-full bg-[#FFC0CB] px-2 sm:px-3">
+                                <button
+                                  onClick={() =>
+                                    handleDecrement(
+                                      cartItem._id,
+                                      cartItem.quantity,
+                                    )
+                                  }
+                                  disabled={updatingId === cartItem._id}
+                                  className="text-lg sm:text-xl font-bold cursor-pointer disabled:opacity-50 w-6"
+                                >
+                                  −
+                                </button>
+
+                                {updatingId === cartItem._id ? (
+                                  <LoaderIcon className="size-4 animate-spin" />
+                                ) : (
+                                  <span className="text-sm sm:text-lg font-semibold">
+                                    {cartItem.quantity}
+                                  </span>
+                                )}
+
+                                <button
+                                  onClick={() =>
+                                    handleIncrement(
+                                      cartItem._id,
+                                      cartItem.quantity,
+                                    )
+                                  }
+                                  disabled={updatingId === cartItem._id}
+                                  className="text-lg sm:text-xl font-bold cursor-pointer disabled:opacity-50 w-6"
+                                >
+                                  +
+                                </button>
                               </div>
                             ) : (
-                              <div className="flex justify-center items-center gap-2 sm:gap-4">
-                                Start order <IoCartOutline />
-                              </div>
+                              <button
+                                onClick={() => handleCart(fs._id)}
+                                disabled={loadingId === fs._id}
+                                className="flex hover:text-white cursor-pointer mt-2 sm:mt-3 rounded-md justify-center items-center gap-2 sm:gap-3 border h-9 sm:h-10 w-full bg-[#FFC0CB] text-sm sm:text-lg lg:text-xl disabled:opacity-70"
+                              >
+                                {loadingId === fs._id ? (
+                                  <div>
+                                    <LoaderIcon className="size-4 animate-spin" />
+                                  </div>
+                                ) : (
+                                  <div className="flex justify-center items-center gap-2 sm:gap-4">
+                                    Start order <IoCartOutline />
+                                  </div>
+                                )}
+                              </button>
                             )}
-                          </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </div>

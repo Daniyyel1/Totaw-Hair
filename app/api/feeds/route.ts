@@ -6,8 +6,7 @@ interface RequestBody {
     email:string;
 }
 
-
-export const POST = async(request: Request)=>{ 
+export const POST = async(request: Request)=>{
 
     const { email } = await request.json() as RequestBody;
 
@@ -28,3 +27,4 @@ export const POST = async(request: Request)=>{
        }
 
 }
+

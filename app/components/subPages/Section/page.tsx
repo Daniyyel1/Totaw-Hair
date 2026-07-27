@@ -1,3 +1,5 @@
+
+
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -13,8 +15,9 @@ import { LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const SectionWrapper = () => {
-  const { oil, addToCart } = useOils();
+  const { oil, cart, addToCart, updateQuantity, removeFromCart } = useOils();
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -50,6 +53,33 @@ const SectionWrapper = () => {
     }
   };
 
+  const handleIncrement = async (cartId: string, currentQty: number) => {
+    try {
+      setUpdatingId(cartId);
+      await updateQuantity(cartId, currentQty + 1);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleDecrement = async (cartId: string, currentQty: number) => {
+    try {
+      setUpdatingId(cartId);
+      if (currentQty <= 1) {
+        await removeFromCart(cartId);
+        toast.success("Item removed from cart");
+      } else {
+        await updateQuantity(cartId, currentQty - 1);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   return (
     <section className="font-comorantInfant max-w-275 mx-auto">
       <div className="mt-20">
@@ -70,50 +100,90 @@ const SectionWrapper = () => {
                 whileTap={{ cursor: "grabbing" }}
                 className="flex h-full items-center gap-8 px-8 cursor-grab"
               >
-                {oil.map((ol) => (
-                  <div
-                    key={ol._id}
-                    className="w-[300px] h-80 shrink-0 rounded-lg text-black text-2xl"
-                  >
-                    <div className="h-[260px] w-full">
-                      <Image
-                        src={
-                          ol.itemImage?.startsWith("/9j/")
-                            ? `data:image/jpeg;base64,${ol.itemImage}`
-                            : ol.itemImage || "/placeholder.jpg"
-                        }
-                        alt={ol.name}
-                        width={300}
-                        height={260}
-                        className="object-cover h-full w-full rounded-md"
-                      />
-                    </div>
-                    <div>
-                      <h1 className="text-[16px] truncate py-1.5">{ol.name}</h1>
-                      <span className="block text-[20px] font-bold">
-                        ₦
-                        {ol.price.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </span>
-                      <button
-                        onClick={() => handleCart(ol._id)}
-                        className="rounded-md hover:text-white flex justify-center items-center gap-4 mt-4 cursor-pointer h-12 w-full bg-[#FFC0CB] text-[19px]"
-                      >
-                        {loadingId === ol._id ? (
-                          <div>
-                            <LoaderIcon className="size-4 animate-spin" />
+                {oil.map((ol) => {
+                  const cartItem = cart.find((item) => item.oil._id === ol._id);
+
+                  return (
+                    <div
+                      key={ol._id}
+                      className="w-[300px] h-80 shrink-0 rounded-lg text-black text-2xl"
+                    >
+                      <div className="h-[260px] w-full">
+                        <Link href={`/components/pages/Products/${ol._id}`}>
+                          <Image
+                            src={
+                              ol.itemImage?.startsWith("/9j/")
+                                ? `data:image/jpeg;base64,${ol.itemImage}`
+                                : ol.itemImage || "/placeholder.jpg"
+                            }
+                            alt={ol.name}
+                            width={300}
+                            height={260}
+                            className="object-cover h-full w-full rounded-md"
+                          />
+                        </Link>
+                      </div>
+                      <div>
+                        <h1 className="text-[16px] truncate py-1.5">{ol.name}</h1>
+                        <span className="block text-[20px] font-bold">
+                          ₦
+                          {ol.price.toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </span>
+
+                        {cartItem ? (
+                          <div className="flex justify-between items-center mt-4 h-12 w-full bg-[#FFC0CB] rounded-md px-4">
+                            <button
+                              onClick={() =>
+                                handleDecrement(cartItem._id, cartItem.quantity)
+                              }
+                              disabled={updatingId === cartItem._id}
+                              className="text-[22px] font-bold cursor-pointer disabled:opacity-50 w-8"
+                            >
+                              −
+                            </button>
+
+                            {updatingId === cartItem._id ? (
+                              <LoaderIcon className="size-4 animate-spin" />
+                            ) : (
+                              <span className="text-[18px] font-semibold">
+                                {cartItem.quantity}
+                              </span>
+                            )}
+
+                            <button
+                              onClick={() =>
+                                handleIncrement(cartItem._id, cartItem.quantity)
+                              }
+                              disabled={updatingId === cartItem._id}
+                              className="text-[22px] font-bold cursor-pointer disabled:opacity-50 w-8"
+                            >
+                              +
+                            </button>
                           </div>
                         ) : (
-                          <div className="flex justify-center items-center gap-4">
-                            Start order <IoCartOutline />
-                          </div>
+                          <button
+                            onClick={() => handleCart(ol._id)}
+                            disabled={loadingId === ol._id}
+                            className="rounded-md hover:text-white flex justify-center items-center gap-4 mt-4 cursor-pointer h-12 w-full bg-[#FFC0CB] text-[19px] disabled:opacity-70"
+                          >
+                            {loadingId === ol._id ? (
+                              <div>
+                                <LoaderIcon className="size-4 animate-spin" />
+                              </div>
+                            ) : (
+                              <div className="flex justify-center items-center gap-4">
+                                Start order <IoCartOutline />
+                              </div>
+                            )}
+                          </button>
                         )}
-                      </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </motion.div>
             </div>
           </div>

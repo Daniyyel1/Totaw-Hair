@@ -11,6 +11,8 @@ const ProfilePage = async () => {
 
     if (!session?.user) redirect("/Login");
 
+    
+
      await dbConnect();
 
   const user = await usersModel.findById(session.user.id).lean();

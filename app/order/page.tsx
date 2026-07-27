@@ -5,11 +5,11 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface OrderItem {
-  book: {
+  oil: {
     _id: string;
-    title: string;
+    name: string;
     price: number;
-    image: string;
+    itemImage: string;
   };
   quantity: number;
   price: number;
@@ -99,16 +99,16 @@ const Order = () => {
                             width={50}
                             height={50}
                             src={
-                              item.book.image?.startsWith("/9j/")
-                                ? `data:image/jpeg;base64,${item.book.image}`
-                                : item.book.image || "/placeholder.jpg"
+                              item.oil.itemImage?.startsWith("/9j/")
+                                ? `data:image/jpeg;base64,${item.oil.itemImage}`
+                                : item.oil.itemImage || "/placeholder.jpg"
                             }
-                            alt={item.book.title}
+                            alt={item.oil.itemImage}
                             className="h-10 w-8 object-cover rounded-md"
                           />
                           <div>
                             <p className="capitalize text-sm">
-                              {item.book.title}
+                              {item.oil.name}
                             </p>
                             <p className="text-xs text-gray-500">
                               Qty: {item.quantity} · ₦
