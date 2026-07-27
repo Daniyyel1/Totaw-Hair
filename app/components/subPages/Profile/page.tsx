@@ -19,7 +19,7 @@ const ProfilePage = async () => {
   return (
     <section>
      
-     <ProfileContext userName={user?.name} email={user?.email} image={session?.user.image}  userPicture={user?.profilePicture} phoneNo={user?.telephone} userBio={user?.bio} />
+     <ProfileContext userName={user?.name} email={user?.email} userPicture={user?.profilePicture} phoneNo={user?.telephone} userBio={user?.bio} />
       
     </section>
   );

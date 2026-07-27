@@ -44,9 +44,11 @@ const Banner = () => {
               Explore our products <MoveRight />
             </button>
             </Link>
+            <Link href='/components/pages/About'>
             <button className="border h-12 w-full sm:w-30 rounded-3xl hover:border hover:border-white cursor-pointer">
               Know more
             </button>
+            </Link>
           </div>
         </div>
       </div>

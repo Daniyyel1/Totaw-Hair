@@ -12,7 +12,6 @@ const RegistrationForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isShownPassword, setIsShownPassword] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -24,17 +23,11 @@ const RegistrationForm = () => {
     setIsPasswordShown(!isPasswordShown);
   };
 
-  // const canSubmit =
-  //   username.trim().length > 1 &&
-  //   email.includes("@") &&
-  //   password.length > 8 &&
-  //   password === confirmPassword &&
-  //   agreed;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // if (!canSubmit) return;
+  
 
     if (!name || !email || !password) {
       toast.error("fields cannot be empty");
@@ -63,7 +56,7 @@ const RegistrationForm = () => {
       });
 
       if (response.status === 201) {
-        toast.success("User created Successfully");
+        toast.success("Account created! Check your inbox or spam/junk folder to verify your email.");
       } else {
         const data = await response.json().catch(() => null);
         const message = String(data?.message || "");

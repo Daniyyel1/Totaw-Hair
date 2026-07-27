@@ -7,6 +7,12 @@ const UserSchema = new Schema({
   profilePicture: {type: String},
   bio: {type: String},
   telephone : {type: String},
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
+  emailVerified: { type: Date, default: null },
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

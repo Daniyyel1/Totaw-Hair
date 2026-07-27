@@ -5,3 +5,5 @@ export const ProtectedRoutes = [
     '/components/subPages/Profile',
     '/components/pages/CartPage',
 ]
+
+export const isAdminDashboard = '/Dashboard'

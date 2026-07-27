@@ -33,14 +33,13 @@ const SectionWrapper = () => {
   }, [oil]);
 
   const handleCart = async (oilId: string) => {
+    if (!session?.user) {
+      toast.error("You need to login to add product to cart");
+      router.push("/Login");
+      return;
+    }
     try {
       setLoadingId(oilId);
-
-      if (!session) {
-        toast.error("You need to login to add product to cart");
-        router.push("/Login");
-        return;
-      }
 
       await addToCart(oilId, 1);
       toast.success("Item added to cart");
@@ -127,7 +126,7 @@ const SectionWrapper = () => {
 
         <div className="fixed bottom-6 right-6 z-50">
           <Link
-            href="https://wa.me/2348100613971"
+            href="https://wa.me/2348188921529"
             target="_blank"
             rel="noopener noreferrer"
           >

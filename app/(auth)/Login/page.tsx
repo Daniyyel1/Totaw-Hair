@@ -10,30 +10,26 @@ import { FcGoogle } from "react-icons/fc";
 import { doCredentialsLogin, doSocialLogin } from "@/app/lib/action";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isShownPassword, setIsShownPassword] = useState(false);
-
+    const { update } = useSession();
   const router = useRouter();
 
   const showPassword = () => {
     setIsShownPassword(!isShownPassword);
   };
 
-  // const canSubmit =
-  //   username.trim().length > 1 &&
-  //   email.includes("@") &&
-  //   password.length > 8 &&
-  //   password === confirmPassword &&
-  //   agreed;
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // if (!canSubmit) return;
+
 
     if (!email || !password) {
       toast.error("fields cannot be empty");
@@ -52,7 +48,9 @@ const LoginForm = () => {
 
       if (response) {
         toast.success("sign in successfully");
-        router.push('/components/subPages/Profile')
+          await update();  
+        router.refresh();
+        router.push('/')
       } else {
         toast.error("Something went wrong");
       }
@@ -107,7 +105,7 @@ const LoginForm = () => {
                 )}
               </div>
              
-              <Link className="flex justify-end items-center font-bold text-sm sm:text-base" href="">
+              <Link className="flex justify-end items-center font-bold text-sm sm:text-base" href="/Forgot-Password">
                 Forgot Password?
               </Link>
               <div className="flex justify-center items-center">

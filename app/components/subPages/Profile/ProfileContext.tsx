@@ -14,7 +14,6 @@ import { toast } from "sonner";
 type Props = {
   userName?: string | null;
   email?: string | null;
-  image?: string | null;
   userPicture?: string | null;
   phoneNo?: string | null;
   userBio?:string | null;
@@ -23,7 +22,6 @@ type Props = {
 const ProfileContext = ({
   userName,
   email,
-  image,
   userPicture,
   phoneNo,
   userBio,
@@ -36,7 +34,6 @@ const ProfileContext = ({
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState<string>("");
 
-  console.log("picture", userPicture);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

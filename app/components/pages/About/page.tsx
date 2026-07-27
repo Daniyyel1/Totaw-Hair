@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import ceo from "../../../../public/ceo.jpg";
 import ceoo from "../../../../public/ceoo.jpg";
 import Footer from "../../layouts/footer/page";
+import VideoSection from "../../subPages/VideoSection/page";
 
 const About = () => {
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,7 @@ const About = () => {
             <div className="flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-9 mt-8 sm:mt-10 md:mt-12">
               <div className="flex-1 h-90 sm:h-80 md:h-96 lg:h-120 w-full">
                 <Image
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover rounded-md"
                   src={ceo}
                   alt="ceo"
                   width={300}
@@ -86,7 +87,7 @@ const About = () => {
               </div>
               <div className="flex-1 h-90 sm:h-80 md:h-96 lg:h-120 w-full">
                 <Image
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover rounded-md"
                   src={ceoo}
                   alt="ceoo"
                   width={200}
@@ -94,6 +95,7 @@ const About = () => {
                 />
               </div>
             </div>
+              <VideoSection />
             <Footer />
           </div>
         </section>
