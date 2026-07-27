@@ -55,7 +55,7 @@ export const POST = async (request: Request) => {
 
   await verifyTokenModel.create({ email, token, expires });
 
-  const verifyUrl = `${process.env.NEXTAUTH_URL}/verify-email?token=${token}`;
+  const verifyUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email?token=${token}`;
 
   await resend.emails.send({
     from: "Totaw <noreply@totaw.com.ng>",
