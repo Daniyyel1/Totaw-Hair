@@ -1,27 +1,25 @@
-
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import tota from "../../../../public/tota.png";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import {  X, Menu } from "lucide-react";
+import { X, Menu } from "lucide-react";
 import { RiShoppingBasketFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
 import { useOils } from "@/app/context/page";
 import { SlHandbag } from "react-icons/sl";
 import { RiDeleteBin7Line } from "react-icons/ri";
+import { FaUserPlus } from "react-icons/fa";
 import axios from "axios";
 
 interface UserData {
-  id:string,
-  email:string,
-  image:string,
-  name:string,
-  profilePicture:string,
+  id: string;
+  email: string;
+  image: string;
+  name: string;
+  profilePicture: string;
 }
-
 
 const Navbar = () => {
   const pathName = usePathname();
@@ -37,25 +35,21 @@ const Navbar = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
 
-    
-  const fetchUser = async()=>{
-    
-      try{
-         const response = await axios.get("/api/user");
-    if(response.status === 201){
-       setUser(response.data.data)
-       return;
-    }
-      }catch(e){
-        console.error(e)
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get("/api/user");
+      if (response.status === 201) {
+        setUser(response.data.data);
+        return;
       }
-  }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchUser();
-
-  }, [])
-
+  }, []);
 
   useEffect(() => {
     if (isCart || isMenuOpen) {
@@ -69,10 +63,6 @@ const Navbar = () => {
     };
   }, [isCart, isMenuOpen]);
 
-
-
-  
- 
   const navLinks = [
     { id: 1, label: "Home", href: "/", protected: false },
     {
@@ -81,26 +71,14 @@ const Navbar = () => {
       href: "/components/pages/Products",
       protected: false,
     },
-    {
-      id: 3,
-      label: (
-        <RiShoppingBasketFill
-          onClick={isCartOpen}
-          className="text-2xl animate-pulse"
-        />
-      ),
-      href: "",
-      protected: false,
-    },
-    { id: 4, label: "About", href: "/components/pages/About" },
+   
+    { id: 3, label: "About", href: "/components/pages/About" },
   ];
 
   const visibleLinks = navLinks.filter((link) => {
     if (link.protected && !session) return false;
     return true;
   });
-
-  
 
   return (
     <section className="relative">
@@ -112,9 +90,17 @@ const Navbar = () => {
               onClick={toggleMenu}
               className="flex lg:hidden justify-center items-center cursor-pointer"
             >
-              {isMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+              {isMenuOpen ? (
+                <X className="size-6" />
+              ) : (
+                <Menu className="size-6" />
+              )}
             </button>
-            <Image className="h-9 w-9 sm:h-10 sm:w-10 lg:h-12 lg:w-12" src={tota} alt="totaw"></Image>
+            <Image
+              className="h-9 w-9 sm:h-10 sm:w-10 lg:h-12 lg:w-12"
+              src={tota}
+              alt="totaw"
+            ></Image>
             <div className="hidden lg:flex justify-center items-center gap-15">
               {visibleLinks.map(({ href, label, id }) => (
                 <Link
@@ -134,44 +120,52 @@ const Navbar = () => {
               ))}
             </div>
           </div>
-          <div className="flex lg:hidden justify-center items-center relative">
-            <Link href="" onClick={isCartOpen}>
-              <div className="relative flex items-center justify-center">
-                <RiShoppingBasketFill className="text-2xl animate-pulse" />
-                <span className="flex border h-5 w-5 text-[#FFC0CB] font-extrabold text-[16px] absolute -top-2 -right-3 justify-center bg-white items-center rounded-full">
-                  {cart?.length}
-                </span>
-              </div>
-            </Link>
-          </div>
+          
           <div className="flex justify-center items-center gap-2 sm:gap-3">
             <div className="">
-              {
-                session?.user.role === "admin" && (
-                  <div>
-                    <Link href='/Dashboard'>
-                    <button className="border-2 cursor-pointer h-10 w-35 rounded-md">Hello admin!</button>
-                    </Link>
-                  </div>
-                )
-              }
+              {session?.user.role === "admin" && (
+                <div>
+                  <Link href="/Dashboard">
+                    <button className="border-2 cursor-pointer h-10 w-35 rounded-md">
+                      Hello admin!
+                    </button>
+                  </Link>
+                </div>
+              )}
             </div>
             {user ? (
-                <Link href="/components/subPages/Profile" className=" sm:inline whitespace-nowrap">
-
-              <div className="rounded-xl flex justify-center items-center h-9 sm:h-10 w-full px-2 sm:px-3 bg-black text-white font-bold gap-2">
+              <Link
+                href="/components/subPages/Profile"
+                className=" sm:inline whitespace-nowrap"
+              >
+                <div className="rounded-xl flex justify-center items-center h-9 sm:h-10 w-full px-2 sm:px-3 bg-black text-white font-bold gap-2">
                   {user?.name}
-                
-                <Image className="h-7 w-7 object-cover rounded-full" src={user?.profilePicture} alt={user?.name} width={10} height={10} />
-              
-              </div>
+
+                  <Image
+                    className="h-7 w-7 object-cover rounded-full"
+                    src={user?.profilePicture}
+                    alt={user?.name}
+                    width={10}
+                    height={10}
+                  />
+                </div>
               </Link>
             ) : (
-              <Link href="/Register">
-                <button className=" w-full text-[15px] sm:text-[18px] px-2 sm:px-0 bg-[#FFC0CB] rounded-[12px] cursor-pointer flex justify-center items-center whitespace-nowrap">
-                  Login/Register
-                </button>
-              </Link>
+              <div className="flex justify-center items-center gap-2 lg:gap-3">
+                <Link href="/Register">
+                  <button className="w-full gap-2 text-[15px] sm:text-[18px] px-2 sm:px-0 bg-[#FFC0CB] rounded-[12px] cursor-pointer flex justify-center items-center whitespace-nowrap">
+                    <FaUserPlus className="size-6" /> <p className="hidden lg:block">Login/Register</p>
+                  </button>
+                </Link>
+                <Link href="" onClick={isCartOpen}>
+                  <div className="relative flex items-center justify-center pr-3">
+                    <RiShoppingBasketFill className="text-2xl animate-pulse" />
+                    <span className="flex border h-5 w-5 text-[#FFC0CB] font-extrabold text-[16px] absolute -top-2 right-[-2] justify-center bg-white items-center rounded-full">
+                      {cart?.length}
+                    </span>
+                  </div>
+                </Link>
+              </div>
             )}
           </div>
         </div>
