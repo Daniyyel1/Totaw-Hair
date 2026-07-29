@@ -134,6 +134,7 @@ const Navbar = () => {
               )}
             </div>
             {user ? (
+              <div className="flex justify-center items-center gap-3">
               <Link
                 href="/components/subPages/Profile"
                 className=" sm:inline whitespace-nowrap"
@@ -150,6 +151,15 @@ const Navbar = () => {
                   />
                 </div>
               </Link>
+                <Link href="" onClick={isCartOpen}>
+                  <div className="relative flex items-center justify-center pr-3">
+                    <RiShoppingBasketFill className="text-2xl animate-pulse" />
+                    <span className="flex border h-5 w-5 text-[#FFC0CB] font-extrabold text-[16px] absolute -top-2 right-[-2] justify-center bg-white items-center rounded-full">
+                      {cart?.length}
+                    </span>
+                  </div>
+                </Link>
+              </div>
             ) : (
               <div className="flex justify-center items-center gap-2 lg:gap-3">
                 <Link href="/Register">
@@ -157,7 +167,7 @@ const Navbar = () => {
                     <FaUserPlus className="size-6" /> <p className="hidden lg:block">Login/Register</p>
                   </button>
                 </Link>
-                <Link href="" onClick={isCartOpen}>
+                  <Link href="" onClick={isCartOpen}>
                   <div className="relative flex items-center justify-center pr-3">
                     <RiShoppingBasketFill className="text-2xl animate-pulse" />
                     <span className="flex border h-5 w-5 text-[#FFC0CB] font-extrabold text-[16px] absolute -top-2 right-[-2] justify-center bg-white items-center rounded-full">
