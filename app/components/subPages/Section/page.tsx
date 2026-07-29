@@ -5,7 +5,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useOils } from "@/app/context/page";
 import { MdArrowRightAlt } from "react-icons/md";
-import { FaWhatsapp } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 import { IoCartOutline } from "react-icons/io5";
@@ -13,6 +12,7 @@ import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import whatsapp from '../../../../public/whatsapp.png'
 
 const SectionWrapper = () => {
   const { oil, cart, addToCart, updateQuantity, removeFromCart } = useOils();
@@ -200,7 +200,7 @@ const SectionWrapper = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaWhatsapp className="text-5xl animate-bounce text-[#25D366]" />
+           <Image className="h-12 animate-bounce w-12" src={whatsapp} alt="whatsapp" width={200} height={200} />
           </Link>
         </div>
       </div>
