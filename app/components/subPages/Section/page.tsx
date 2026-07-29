@@ -189,9 +189,11 @@ const SectionWrapper = () => {
           </div>
         </div>
         <div className="mt-10 flex justify-center items-center">
+          <Link href='/components/pages/About'>
           <button className="flex text-[18px] border h-12 rounded-md cursor-pointer w-70 justify-center items-center gap-5 bg-[#FFC0CB]">
             Learn more about <MdArrowRightAlt className="text-3xl" />
           </button>
+          </Link>
         </div>
 
         <div className="fixed bottom-6 right-6 z-50">
