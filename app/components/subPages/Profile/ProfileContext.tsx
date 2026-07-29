@@ -1,7 +1,7 @@
 "use client";
 
 import { doLogout } from "@/app/lib/action";
-import Order from "@/app/Order/page";
+import Order from "@/app/order/page";
 import { ImagePlus, LoaderIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
