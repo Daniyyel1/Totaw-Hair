@@ -1,6 +1,7 @@
 "use client";
 
 import { doLogout } from "@/app/lib/action";
+import Order from "@/app/Order/page";
 import { ImagePlus, LoaderIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -325,6 +326,13 @@ const ProfileContext = ({
                     </div>
                   )}
                 </div>
+                 <div className="px-2 sm:px-6 lg:px-8 py-3">
+                    {
+                      selected === 'Orders' && (
+                        <Order />
+                      )
+                    }
+                 </div>
               </div>
             </div>
           </div>
