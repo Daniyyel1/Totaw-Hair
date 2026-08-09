@@ -28,7 +28,7 @@ const Order = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("/api/my-orders", {
+      const response = await axios.get("/api/orders", {
         withCredentials: true,
       });
       if (response.status === 200) {
@@ -95,15 +95,13 @@ const Order = () => {
                     <div className="flex flex-col gap-2">
                       {od.items.map((item, idx) => (
                         <div key={idx} className="flex items-center gap-3">
-                          <Image
-                            width={50}
-                            height={50}
+                          <Image width={50} height={50}
                             src={
                               item.oil.itemImage?.startsWith("/9j/")
                                 ? `data:image/jpeg;base64,${item.oil.itemImage}`
                                 : item.oil.itemImage || "/placeholder.jpg"
                             }
-                            alt={item.oil.itemImage}
+                            alt={item.oil.name}
                             className="h-10 w-8 object-cover rounded-md"
                           />
                           <div>
