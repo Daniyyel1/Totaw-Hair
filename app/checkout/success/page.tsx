@@ -36,7 +36,7 @@ function CheckoutSuccessContent() {
         <>
           <h1 className="text-2xl font-bold">Payment Successful!</h1>
           <p className="text-gray-500">Thank you for your order.</p>
-          <Link href="/components/subpages/Order" className="underline">
+          <Link href="/components/subPages/Profile" className="underline">
             View your orders
           </Link>
         </>

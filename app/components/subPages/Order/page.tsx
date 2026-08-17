@@ -28,7 +28,7 @@ const Order = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("/api/orders", {
+      const response = await axios.get("/api/my-orders", {
         withCredentials: true,
       });
       if (response.status === 200) {
